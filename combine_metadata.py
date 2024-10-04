@@ -68,23 +68,26 @@ def filter_out_duplicate_samples(big_df_csv):
     headers = big_df.columns
     header_df = pl.DataFrame({'headers':headers})
     with pl.Config(tbl_rows=-1):
-        print(header_df)
+        print(header_df.sort('headers'))
     sample_names = input(
         'please type the name of the header that contains sample names: \n'
     ).replace(" ", "_").upper()    
     while sample_names not in headers:
-        os.system('clear')
         with pl.Config(tbl_rows=-1):
             print(header_df)
         print('error, entered value not in headers')
         sample_names = input(
             'please type the name of the header that contains sample names: \n'
         ).replace(" ", "_").upper()
-    duplicated_df = big_df.filter((big_df.select(sample_names).is_duplicated())).sort(sample_names)    
+    duplicated_df = big_df.filter((big_df.select(sample_names).is_duplicated())).sort(sample_names)
+    removed_samples = duplicated_df.select(pl.col(sample_names)).group_by(pl.all()).len()
+    print('removed samples')
+    print(removed_samples)
     big_df = big_df.filter((big_df.select(sample_names).is_duplicated()).not_()).sort(sample_names)
     big_df.write_csv('out2_unique_samples.csv')
     duplicated_df.write_csv('out3_duplicated_sample_df.csv')
     print('created one output file with duplicated sample and one output file without')
+    input('press any key to move on')
 
 def look_for_coordinate_mismatches(big_df_csv):
     reassign = ''
@@ -184,7 +187,7 @@ def look_for_different_versions(big_df_csv):
         checklist = struct_dict[int(row_index)]
         if type(checklist[0]) is tuple:
             checklist = checklist[0]
-        change_header = input('Header to change: ').replace(' ','_').upper()
+        change_header = input(f'Header to change: ({struct_df.select(pl.exclude('index')).columns}) ').replace(' ','_').upper()
         while change_header not in struct_df.columns:
             change_header = input('please enter a valid header: ').replace(' ','_').upper()
         new_value = input('change to: ')
@@ -202,7 +205,7 @@ def look_for_different_versions(big_df_csv):
     while keep_going != 'no':
         os.system('clear')
         headers = big_df.columns
-        header_df = pl.DataFrame({'headers':headers})
+        header_df = pl.DataFrame({'headers':headers}).sort('headers')
         with pl.Config(tbl_rows=-1):
             print(header_df)
         keep_going = input('would you like to examine headers? (yes/no)\n')
@@ -263,4 +266,4 @@ if not os.path.isfile('out2_unique_samples.csv'):
     filter_out_duplicate_samples('out1_renamed_columns.csv')
 if not os.path.isfile('out4_fixed_coordinates.csv'):
     look_for_coordinate_mismatches('out2_unique_samples.csv')
-look_for_different_versions('out4_fixed_coordinates.csv')
+look_for_different_versions('out5_inspected.csv')
