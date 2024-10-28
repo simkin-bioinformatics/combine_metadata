@@ -82,7 +82,8 @@ def filter_out_duplicate_samples(big_df_csv):
     duplicated_df = big_df.filter((big_df.select(sample_names).is_duplicated())).sort(sample_names)
     removed_samples = duplicated_df.select(pl.col(sample_names)).group_by(pl.all()).len()
     print('removed samples')
-    print(removed_samples)
+    with pl.Config(tbl_rows=-1):
+        print(removed_samples)
     big_df = big_df.filter((big_df.select(sample_names).is_duplicated()).not_()).sort(sample_names)
     big_df.write_csv('out2_unique_samples.csv')
     duplicated_df.write_csv('out3_duplicated_sample_df.csv')
