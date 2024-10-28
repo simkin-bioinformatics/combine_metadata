@@ -97,7 +97,7 @@ def look_for_coordinate_mismatches(big_df_csv):
     os.system('clear')
     with pl.Config(tbl_rows=-1):
         print(header_df)
-    print('to ensure that each health facility has correct gsp coordinates,\n'
+    print('to ensure that each health facility has correct GPS coordinates,\n'
           'please type in the following info')
     hf_name = input('Health Facility Name Header: ').replace(" ","_").upper()
     while hf_name not in headers:
@@ -187,7 +187,7 @@ def look_for_different_versions(big_df_csv):
         checklist = struct_dict[int(row_index)]
         if type(checklist[0]) is tuple:
             checklist = checklist[0]
-        change_header = input(f'Header to change: ({struct_df.select(pl.exclude('index')).columns}) ').replace(' ','_').upper()
+        change_header = input(f'Header to change: ({struct_df.select(pl.exclude("index")).columns}) ').replace(' ','_').upper()
         while change_header not in struct_df.columns:
             change_header = input('please enter a valid header: ').replace(' ','_').upper()
         new_value = input('change to: ')
@@ -266,4 +266,4 @@ if not os.path.isfile('out2_unique_samples.csv'):
     filter_out_duplicate_samples('out1_renamed_columns.csv')
 if not os.path.isfile('out4_fixed_coordinates.csv'):
     look_for_coordinate_mismatches('out2_unique_samples.csv')
-look_for_different_versions('out5_inspected.csv')
+look_for_different_versions('out4_fixed_coordinates.csv')
