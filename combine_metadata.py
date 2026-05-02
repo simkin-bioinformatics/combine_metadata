@@ -1,5 +1,5 @@
 import polars as pl
-import polars.selectors as cs
+# import polars.selectors as cs
 import os
 # round the latitude and longitude columns to four decimal places
 

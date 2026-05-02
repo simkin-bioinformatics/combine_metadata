@@ -1,0 +1,48 @@
+configfile: "config/config.yaml"
+
+from pathlib import Path
+
+results = Path(config["output_folder"])
+
+rule concatenate_metadata:
+    input:
+        metadata_files = config["metadata_files"]
+    output:
+        concatenated_metadata = results / "concatenated_metadata.csv",
+    params:
+        columns_to_rename = config["columns_to_rename"]
+    script:
+        "scripts/rename_columns.py"
+
+rule spellcheck_metadata:
+    input:
+        concatenated_metadata = results / "concatenated_metadata.csv"
+    output:
+        spellchecked_metadata = results / "spellchecked_metadata.csv"
+    script:
+        "scripts/spellcheck_metadata.py"
+
+rule get_hierarchy:
+    input:
+        spellchecked_metadata = results / "spellchecked_metadata.csv"
+    output:
+        sorted_metadata = results / "sorted_metadata.csv"
+    params:
+        geographical_hierarchy = config['geographical_hierarchy'],
+        latitude_column = config['latitude_column'],
+        longitude_column = config['longitude_column'],
+        sample_column = config['sample_name_column']
+    script:
+        "scripts/get_hierarchy.py"
+
+rule spellcheck_geography:
+    input:
+        sorted_metadata = results / "sorted_metadata.csv"
+    output:
+        spellchecked_geo = results / "spellchecked_geography.csv"
+    params:
+        spellcheck_geography_dict = config['spellcheck_geography'],
+        geographical_hierarchy = config['geographical_hierarchy'],
+        columns_to_delete = config.get("columns_to_delete", 0)
+    script:
+        "scripts/spellcheck_geography.py"

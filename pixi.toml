@@ -1,0 +1,13 @@
+[workspace]
+authors = ["Charlie Simkin <charlie.simkin@gmail.com>"]
+channels = ["conda-forge", "bioconda"]
+name = "combine_metadata"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+polars = ">=1.40.0,<2"
+snakemake = ">=9.19.0,<10"
+micro = ">=2.0.15,<3"
