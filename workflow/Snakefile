@@ -12,19 +12,19 @@ rule concatenate_metadata:
     params:
         columns_to_rename = config["columns_to_rename"]
     script:
-        "scripts/rename_columns.py"
+        "scripts/concatenate.py"
 
-rule spellcheck_metadata:
+rule spellcheck_headers:
     input:
         concatenated_metadata = results / "concatenated_metadata.csv"
     output:
-        spellchecked_metadata = results / "spellchecked_metadata.csv"
+        spellchecked_headers = results / "spellchecked_headers.csv"
     script:
-        "scripts/spellcheck_metadata.py"
+        "scripts/spellcheck_headers.py"
 
 rule get_hierarchy:
     input:
-        spellchecked_metadata = results / "spellchecked_metadata.csv"
+        spellchecked_headers = results / "spellchecked_headers.csv"
     output:
         sorted_metadata = results / "sorted_metadata.csv"
     params:
@@ -35,14 +35,14 @@ rule get_hierarchy:
     script:
         "scripts/get_hierarchy.py"
 
-rule spellcheck_geography:
+rule fix_typos:
     input:
         sorted_metadata = results / "sorted_metadata.csv"
     output:
-        spellchecked_geo = results / "spellchecked_geography.csv"
+        spellchecked_geo = results / "fixed_typos.csv"
     params:
         spellcheck_geography_dict = config['spellcheck_geography'],
         geographical_hierarchy = config['geographical_hierarchy'],
-        columns_to_delete = config.get("columns_to_delete", 0)
+        columns_to_delete = int(config.get("columns_to_delete", 0))
     script:
-        "scripts/spellcheck_geography.py"
+        "scripts/fix_typos.py"

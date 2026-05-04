@@ -7,69 +7,85 @@ output_folder: results
 
 columns_to_rename:
   old_column_name: new_column_name
-  COLLECTION_YEAR: YEAR_COLLECTED
-  RDT_RESULT: MRDT_RESULTS
-  LONGTUDE: LONGITUDE
-  YEAR_COLLECTION: YEAR_COLLECTED
-  
+  longtude: longitude
+  collection_year: year_collected
+  year_collection: year_collected
+  mrdt_results: rdt_result
+  hfname: hf_name
+
+
 latitude_column: latitude
 longitude_column: longitude
 sample_name_column: sample_id
 
 geographical_hierarchy:
-  - region
-  - region_code
-  - district
-  - district_code
-  - hfname
-  - hf_code
+  - REGION
+  - REGION_CODE
+  - DISTRICT
+  - DISTRICT_CODE
+  - HF_NAME
+  - HF_CODE
 
 spellcheck_geography:
-  5-50:
-    old entry: new entry
+  2-10:
+    old_entry: new_entry
   4308-4311:
     BKG: RWB
-  3134-3170:
-    Bukoba Dc: Bukoba
   3180-3382:
-    Bukoba_rural: Bukoba
+    Bukoba_rural: Bukoba Dc
   12167-12367:
     MU: MS
   8283-8389:
     Lyamungu: Lyamungo
   20995-21455:
     Mamboleo-community: Mamboleo
+  15692-15728:
+    MAK: MAK1
   20582-20886:
     Magoda-community: Magoda
-  21544-21929:
-    Mpapayu-community: Mpapayu
-  7059-7857:
-    Nyankoroko-community: Nyankoroko
-  15692-15728:
-    MAK: MAKB
   19645-19844:
     Nzega Tc: Nzega
   14641-14843:
     Newala Tc: Newala
+  21544-21929:
+    Mpapayu-community: Mpapayu
   9315-9352:
-    MWG: MWGA
-  7858-8024:
-    Nyankoronko: Nyankoroko
+    MWG: MWG1
+  7059-7857:
+    Nyankoroko-community: Nyankoronko
   12972-13007:
-    NYA: NYAM
-  3171-3179:
-    Bukoba Dc: Bukoba
-  2-75:
-    IL: ILA
+    NYA: NYA1
+  17521-17557:
+    IL: IL1
   19245-19281:
-    KA: KAL
+    KA: KA1
   2402-2440:
-    KG: KGA
+    KG: KG1
   10033-10968:
-    KI: KIT
+    KI: KI1
   12368-12405:
-    MU: MUS
-  4750-5594:
-    MU: MUL
+    MU: MU1
   13587-13640:
-    MU: MTW
+    MU: MU2
+  20514-21929:
+    MU: MU3
+  13119-13586:
+    MW: MW1
+  14138-14174:
+    NA: NA1
+  19282-19844:
+    NU: NZ1
+  16056-17520:
+    RV: RU
+  15853-17520:
+    NY: NY1
+  19845-19882:
+    SI: SI1
+  14844-14880:
+    TA: TA1
+  18622-18658:
+    TU: TU1
+
+  coordinate_fixes:
+    collection_site_header: HF_NAME
+    

@@ -2,3 +2,4 @@ output
 # pixi environments
 .pixi/*
 !.pixi/config.toml
+results

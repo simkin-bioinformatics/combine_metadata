@@ -1,11 +1,10 @@
 import polars as pl
 
-sorted_metadata = pl.read_csv(snakemake.input.sorted_metadata)
+sorted_metadata = pl.read_csv(snakemake.input.sorted_metadata, infer_schema=False)
 spellcheck_geography_dict = snakemake.params.spellcheck_geography_dict
 geographical_hierarchy = [x.upper() for x in snakemake.params.geographical_hierarchy]
 
-spellchecked_geography = sorted_metadata.cast(pl.String)
-spellchecked_geography = spellchecked_geography.with_columns(
+spellchecked_geography = sorted_metadata.cast(pl.String).with_columns(
     pl.col(pl.String).str.strip_chars()
 )
 

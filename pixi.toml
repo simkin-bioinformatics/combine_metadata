@@ -6,6 +6,10 @@ platforms = ["linux-64"]
 version = "0.1.0"
 
 [tasks]
+concatenate = "snakemake -c 1 -F concatenate_metadata"
+check_headers = "snakemake -c 1 -F spellcheck_headers"
+get_hierarchy = "snakemake -c 1 -F get_hierarchy"
+fix_typos = { cmd = "snakemake -c 1 -F fix_typos --config columns_to_delete={{ check_level }}", args = ["check_level"] }
 
 [dependencies]
 polars = ">=1.40.0,<2"

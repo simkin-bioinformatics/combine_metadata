@@ -1,12 +1,13 @@
 import polars as pl
 
-spellchecked_metadata_df = pl.read_csv(snakemake.input.spellchecked_metadata)
-geographical_hierarchy = [x.upper() for x in snakemake.params.geographical_hierarchy]
+spellchecked_metadata_df = pl.read_csv(snakemake.input.spellchecked_headers, infer_schema=False)
+hierarchy = snakemake.params.geographical_hierarchy
+hierarchy = [] if hierarchy is None else hierarchy
 latitude_column = snakemake.params.latitude_column.upper()
 longitude_column = snakemake.params.longitude_column.upper()
 sample_column = snakemake.params.sample_column.upper()
 
-geo_cols = [col for col in geographical_hierarchy if col in spellchecked_metadata_df.columns]
+geo_cols = [col for col in hierarchy if col in spellchecked_metadata_df.columns]
 id_cols = [col for col in [sample_column, latitude_column, longitude_column] if col in spellchecked_metadata_df.columns]
 other_cols = [col for col in spellchecked_metadata_df.columns if col not in set(geo_cols) and col not in set(id_cols)]
 
@@ -14,8 +15,8 @@ max_len = max(len(geo_cols), len(id_cols), len(other_cols), 1)
 pad = lambda lst: lst + [None] * (max_len - len(lst))
 
 column_map = pl.DataFrame({
-    "geographical_columns": pad(geo_cols),
-    "identifier_columns": pad(id_cols),
+    "geographical_hierarchy": pad(geo_cols),
+    "sample and coordinates": pad(id_cols),
     "other_columns": pad(other_cols),
 })
 
