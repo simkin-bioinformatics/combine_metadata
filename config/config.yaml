@@ -17,10 +17,6 @@ output_folder: results
 # Add more header renames as needed
 columns_to_rename:
   LONGTUDE: LONGITUDE
-  YEAR_COLLECTION: COLLECTION_YEAR
-  YEAR_COLLECTED: COLLECTION_YEAR
-  MRDT_RESULTS: RDT_RESULT
-  asl;kdfjads;flkj: L:Kajf;lkajsd
 
 # --------------------------------------------------------------------------------------
 # "pixi run get_hierarchy"
