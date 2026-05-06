@@ -1,37 +1,44 @@
 configfile: "config/config.yaml"
 
+import sys
 from pathlib import Path
 
 results = Path(config["output_folder"])
 
+latitude_header = config['latitude_column'].upper() if config['latitude_column'] != None else ""
+longitude_header = config['longitude_column'].upper() if config['longitude_column'] != None else ""
+sample_header = config['sample_name_column'].upper() if config['sample_name_column'] != None else ""
+hierarchy = config['geographical_hierarchy']
+metadata_file_paths = config["metadata_files"] 
+
+def check_and_return_input(file_paths):
+    for path in file_paths:
+        if not Path(path).exists():
+            # Raise an exception for Snakemake to catch
+            raise FileNotFoundError(f"Critical input {path} is missing!  Please check all paths in config file")
+    return file_paths
+
 rule concatenate_metadata:
     input:
-        metadata_files = config["metadata_files"]
+        # metadata_files = config["metadata_files"]
+        metadata_files = check_and_return_input(metadata_file_paths)
     output:
-        concatenated_metadata = results / "concatenated_metadata.csv",
+        concatenated_metadata = temp(results / "concatenated_metadata.csv"),
     params:
         columns_to_rename = config["columns_to_rename"]
     script:
         "scripts/concatenate.py"
 
-rule spellcheck_headers:
-    input:
-        concatenated_metadata = results / "concatenated_metadata.csv"
-    output:
-        spellchecked_headers = results / "spellchecked_headers.csv"
-    script:
-        "scripts/spellcheck_headers.py"
-
 rule get_hierarchy:
     input:
-        spellchecked_headers = results / "spellchecked_headers.csv"
+        spellchecked_headers = results / "concatenated_metadata.csv"
     output:
         sorted_metadata = results / "sorted_metadata.csv"
     params:
-        geographical_hierarchy = config['geographical_hierarchy'],
-        latitude_column = config['latitude_column'],
-        longitude_column = config['longitude_column'],
-        sample_column = config['sample_name_column']
+        geographical_hierarchy = hierarchy,
+        sample_column = sample_header,
+        latitude_column = latitude_header,
+        longitude_column = longitude_header
     script:
         "scripts/get_hierarchy.py"
 
@@ -39,10 +46,17 @@ rule fix_typos:
     input:
         sorted_metadata = results / "sorted_metadata.csv"
     output:
-        spellchecked_geo = results / "fixed_typos.csv"
+        unique_samples = results / "fixed_typos_unique_samples.csv",
+        duplicated_samples = results / "fixed_typos_duplicated_samples.csv",
+        fixed_typos_summary = results / "fixed_typos_summary.csv"
     params:
         spellcheck_geography_dict = config['spellcheck_geography'],
         geographical_hierarchy = config['geographical_hierarchy'],
-        columns_to_delete = int(config.get("columns_to_delete", 0))
+        # columns_to_delete = int(config.get("columns_to_delete", 0)),
+        latitude_column = config['latitude_column'],
+        longitude_column = config['longitude_column'],
+        close_threshold = config['close_threshold'],
+        sample_column = config['sample_name_column']
+        # include_coordinates = False
     script:
         "scripts/fix_typos.py"

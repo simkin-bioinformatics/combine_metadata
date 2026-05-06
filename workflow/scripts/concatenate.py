@@ -3,7 +3,7 @@ import polars as pl
 import os
 
 input_files = snakemake.input.metadata_files
-columns_to_rename = snakemake.config['columns_to_rename']
+columns_to_rename = snakemake.config['columns_to_rename'] or {"old_name": "new_name"}
 concatenated_metadata = snakemake.output.concatenated_metadata
 
 data_frames = []
@@ -32,8 +32,9 @@ os.system('clear')
 user_message = """
 Each column in the table below shows all of the categories contained in the metadata file 
 that are not present in all three metadata files.  Check it over carefully to see if any
-categories actually describe the same thing.  Rename them in the config file.
-If the table below is empty it means all input metadata files have identical headers.
+categories actually describe the same thing.  Rename them in the config file in the 
+"columns_to_rename" section.  If the table below is empty it means all input metadata files have 
+identical headers.
 """
 print(user_message)
 with pl.Config(tbl_rows=-1):

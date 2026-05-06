@@ -1,24 +1,56 @@
+# --------------------------------------------------------------------------------------
+# run "pixi run concatenate" in terminal and then come back here to edit as needed
+# --------------------------------------------------------------------------------------
+
+# enter the paths to the metadata file(s) that you want to clean up.  if multiple paths are 
+# entered they will be concatenated into one output
 metadata_files:
   - resources/2021_metadata.csv
   - resources/2022_metadata.csv
   - resources/2023_metadata.csv
 
+# path to the folder where the output should go
 output_folder: results
 
+# if the output from "pixi run concatenate" does not look right, edit these values and rerun unil
+# everything looks ok.  The engry below would change a header named 'longtude' into 'longitude'.
+# Add more header renames as needed
 columns_to_rename:
-  old_column_name: new_column_name
+  LONGTUDE: LONGITUDE
+  YEAR_COLLECTION: COLLECTION_YEAR
+  YEAR_COLLECTED: COLLECTION_YEAR
+  MRDT_RESULTS: RDT_RESULT
+  asl;kdfjads;flkj: L:Kajf;lkajsd
 
-latitude_column: latitude
-longitude_column: longitude
-sample_name_column: sample_id
+# --------------------------------------------------------------------------------------
+# "pixi run get_hierarchy"
+# --------------------------------------------------------------------------------------
 
+# edit the values for the categories below until all three are visible in the 
+# output table from "pixi run get_hierarchy"
+sample_name_column: SAMPLE_ID
+latitude_column: LATITUDE
+longitude_column: LONGITUDE
+
+# list for geographical hierarchy columns that starts with the highest (eg country or region) 
+# and goes down to the lowest (eg health facility).  
 geographical_hierarchy:
-  - 
+  - REGION
+  - DISTRICT
+  - HFNAME
 
+# --------------------------------------------------------------------------------------
+# "pixi run fix_typos"
+# --------------------------------------------------------------------------------------
+
+# threshold distance in miles for two health facilities to be considered close to eachother.  This
+# is useful in case the data contain two names for the same health facility
+close_threshold: 1
+
+# after looking at the output from "pixi run fix_typos" you can add fixes below.  The example below
+# would change "old_entry" into "new_entry" in rows 2-10.  The example won't actually make any changes
+# to your metadata unless you happen to have a column with he value "old_entry" in rows 2-10
 spellcheck_geography:
   2-10:
     old_entry: new_entry
-
-  coordinate_fixes:
-    collection_site_header: HF_NAME
-    
+  
